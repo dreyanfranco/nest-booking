@@ -15,7 +15,7 @@ import { UserModule } from './user/user.module';
     SearchModule,
     HotelModule,
     BookingModule,
-    MongooseModule.forRoot('mongodb://localhost/nest'),
+    MongooseModule.forRoot(process.env.MONGODB_CONNECTION_STRING),
   ],
   controllers: [AppController],
   providers: [AppService],
