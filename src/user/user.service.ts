@@ -4,6 +4,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
+import * as bcrypt from 'bcrypt';
 import { Model } from 'mongoose';
 import { User, UserDocument } from 'src/db/schemas/user.schema';
 import { CreateUserDto } from './dto/create_user.dto';
@@ -14,14 +15,18 @@ export class UserService {
   constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {}
 
   async register(createUserDto: CreateUserDto): Promise<User> {
-    const { email } = createUserDto;
+    const { email, password } = createUserDto;
 
     const existingUser = await this.userModel.findOne({ email });
     if (existingUser) {
       throw new BadRequestException('User already exists');
     }
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const user = new this.userModel({
+      ...createUserDto,
+      password: hashedPassword,
+    });
 
-    const user = new this.userModel(createUserDto);
     return user.save();
   }
 
@@ -29,7 +34,12 @@ export class UserService {
     const { email, password } = loginUserDto;
     const user = await this.userModel.findOne({ email });
 
-    if (!user || user.password !== password) {
+    if (!user) {
+      throw new NotFoundException('Invalid email or password');
+    }
+
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid) {
       throw new NotFoundException('Invalid email or password');
     }
 
