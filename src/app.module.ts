@@ -7,6 +7,7 @@ import { BookingModule } from './booking/booking.module';
 import { HotelModule } from './hotel/hotel.module';
 import { SearchModule } from './search/search.module';
 import { UserModule } from './user/user.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { UserModule } from './user/user.module';
     HotelModule,
     BookingModule,
     MongooseModule.forRoot(process.env.MONGODB_CONNECTION_STRING),
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
