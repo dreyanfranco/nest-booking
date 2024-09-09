@@ -1,14 +1,9 @@
-import {
-  BadRequestException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import * as bcrypt from 'bcrypt';
 import { Model } from 'mongoose';
 import { User, UserDocument } from 'src/db/schemas/user.schema';
 import { CreateUserDto } from './dto/create_user.dto';
-import { LoginUserDto } from './dto/login_user.dto';
 
 @Injectable()
 export class UserService {
@@ -30,23 +25,11 @@ export class UserService {
     return user.save();
   }
 
-  async login(loginUserDto: LoginUserDto): Promise<User> {
-    const { email, password } = loginUserDto;
-    const user = await this.userModel.findOne({ email });
-
-    if (!user) {
-      throw new NotFoundException('Invalid email or password');
-    }
-
-    const isPasswordValid = await bcrypt.compare(password, user.password);
-    if (!isPasswordValid) {
-      throw new NotFoundException('Invalid email or password');
-    }
-
-    return user;
+  async findUserByEmail(email: string): Promise<UserDocument | null> {
+    return this.userModel.findOne({ email }).exec();
   }
 
-  async findOneById(id: string): Promise<User | undefined> {
-    return this.userModel.findById(id);
+  async findUserById(id: string): Promise<UserDocument | null> {
+    return this.userModel.findById(id).exec();
   }
 }
