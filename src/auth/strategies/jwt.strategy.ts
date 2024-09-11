@@ -15,12 +15,12 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   }
 
   async validate(payload: any): Promise<UserDocument> {
-    const { sub: id } = payload; // Extract user id from JWT payload
+    const { sub: id } = payload;
 
-    const user = await this.userService.findUserById(id); // Find the user by id
+    const user = await this.userService.findUserById(id);
 
     if (!user) throw new UnauthorizedException('Token not valid');
 
-    return user; // Return the user if found
+    return user;
   }
 }

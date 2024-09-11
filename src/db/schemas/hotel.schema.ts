@@ -3,7 +3,7 @@ import { Document, Schema as MongooseSchema } from 'mongoose';
 import { User } from './user.schema';
 
 export type hotelDocument = Hotel & Document;
-@Schema()
+@Schema({ timestamps: true })
 export class Hotel {
   @Prop({ required: true })
   name: string;
@@ -37,12 +37,6 @@ export class Hotel {
 
   @Prop({ required: true })
   imageUrls: [string];
-
-  @Prop({ required: true })
-  lastUpdated: { type: Date; required: true };
-
-  @Prop({ default: Date.now })
-  createdAt: Date;
 
   @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'User', required: true })
   owner: User;

@@ -1,5 +1,7 @@
+import { User } from '@/db/schemas/user.schema';
+
 export type UserType = {
-  _id: string;
+  _id?: string;
   email: string;
   password: string;
   firstName: string;
@@ -7,7 +9,7 @@ export type UserType = {
 };
 
 export type HotelType = {
-  _id: string;
+  _id?: string;
   userId: string;
   name: string;
   city: string;
@@ -20,8 +22,8 @@ export type HotelType = {
   pricePerNight: number;
   starRating: number;
   imageUrls: string[];
-  lastUpdated?: Date;
-  bookings: BookingType[];
+  owner: User;
+  //   bookings: BookingType[];
 };
 
 export type HotelSearchResponse = {
@@ -34,7 +36,7 @@ export type HotelSearchResponse = {
 };
 
 export type BookingType = {
-  _id: string;
+  _id?: string;
   userId: string;
   firstName: string;
   lastName: string;
