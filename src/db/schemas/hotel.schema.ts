@@ -2,7 +2,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Schema as MongooseSchema } from 'mongoose';
 import { User } from './user.schema';
 
-export type hotelDocument = Hotel & Document;
+export type HotelDocument = Hotel & Document;
 @Schema({ timestamps: true })
 export class Hotel {
   @Prop({ required: true })
@@ -32,8 +32,8 @@ export class Hotel {
   @Prop({ required: true })
   pricePerNight: number;
 
-  @Prop({ required: true })
-  starRating: { type: number; required: true; min: 1; max: 5 };
+  @Prop({ required: true, min: 1, max: 5 })
+  starRating: number;
 
   @Prop({ required: true })
   imageUrls: [string];

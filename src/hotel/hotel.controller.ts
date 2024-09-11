@@ -1,9 +1,17 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
-import { HotelService } from './hotel.service';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+} from '@nestjs/common';
 import { CreateHotelDto } from './dto/create-hotel.dto';
 import { UpdateHotelDto } from './dto/update-hotel.dto';
+import { HotelService } from './hotel.service';
 
-@Controller('hotel')
+@Controller('hotels')
 export class HotelController {
   constructor(private readonly hotelService: HotelService) {}
 
@@ -19,7 +27,7 @@ export class HotelController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.hotelService.findOne(+id);
+    return this.hotelService.findOne(id);
   }
 
   @Patch(':id')
