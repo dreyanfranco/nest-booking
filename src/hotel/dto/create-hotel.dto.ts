@@ -27,7 +27,7 @@ export class CreateHotelDto implements Partial<HotelType> {
 
   @IsString()
   @IsNotEmpty()
-  type: string;
+  category: string;
 
   @IsNumber()
   @Min(1)

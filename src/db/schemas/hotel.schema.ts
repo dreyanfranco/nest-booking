@@ -18,7 +18,7 @@ export class Hotel {
   description: string;
 
   @Prop({ required: true })
-  type: string;
+  category: string;
 
   @Prop({ required: true })
   adultCount: number;
