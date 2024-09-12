@@ -4,14 +4,17 @@ import {
   Controller,
   Delete,
   Get,
+  HttpCode,
   HttpException,
   HttpStatus,
   Param,
+  Patch,
   Post,
   Request,
   UseGuards,
 } from '@nestjs/common';
 import { CreateHotelDto } from './dto/create-hotel.dto';
+import { UpdateHotelDto } from './dto/update-hotel.dto';
 import { HotelService } from './hotel.service';
 
 @Controller('hotels')
@@ -34,6 +37,26 @@ export class HotelController {
     }
   }
 
+  @UseGuards(JwtAuthGuard)
+  @Patch(':id')
+  async updateHotel(
+    @Param('id') id: string,
+    @Body() updateHotelDto: UpdateHotelDto,
+    @Request() req,
+  ) {
+    try {
+      return await this.hotelService.updateHotel(id, updateHotelDto, req.user);
+    } catch (error) {
+      if (error instanceof HttpException) {
+        throw error;
+      }
+      throw new HttpException(
+        'Failed to update hotel',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
   @Get()
   findAll() {
     return this.hotelService.findAll();
@@ -44,13 +67,20 @@ export class HotelController {
     return this.hotelService.findOne(id);
   }
 
-  // @Patch(':id')
-  // update(@Param('id') id: string, @Body() updateHotelDto: UpdateHotelDto) {
-  //   return this.hotelService.update(+id, updateHotelDto);
-  // }
-
+  @UseGuards(JwtAuthGuard)
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.hotelService.remove(+id);
+  @HttpCode(204)
+  async deleteHotel(@Param('id') id: string, @Request() req) {
+    try {
+      await this.hotelService.deleteHotel(id, req.user);
+    } catch (error) {
+      if (error instanceof HttpException) {
+        throw error;
+      }
+      throw new HttpException(
+        'Failed to delete hotel',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
   }
 }
