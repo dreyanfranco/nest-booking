@@ -45,11 +45,11 @@ export type BookingType = {
   childCount: number;
   checkIn: Date;
   checkOut: Date;
-  totalCost: number;
+  totalPrice: number;
 };
 
 export type PaymentIntentResponse = {
   paymentIntentId: string;
   clientSecret: string;
-  totalCost: number;
+  totalPrice: number;
 };

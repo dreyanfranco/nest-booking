@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Schema as MongooseSchema } from 'mongoose';
+import { Booking } from './booking.schema';
 import { User } from './user.schema';
 
 export type HotelDocument = Hotel & Document;
@@ -40,6 +41,9 @@ export class Hotel {
 
   @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'User', required: true })
   owner: User;
+
+  @Prop({ type: [{ type: MongooseSchema.Types.ObjectId, ref: 'Booking' }] })
+  bookings: Booking[];
 }
 
 export const HotelSchema = SchemaFactory.createForClass(Hotel);
