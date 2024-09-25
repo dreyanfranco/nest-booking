@@ -1,4 +1,4 @@
-import { IsDate, IsNumber, IsString, Min } from 'class-validator';
+import { IsDateString, IsNumber, IsString, Min } from 'class-validator';
 
 export class CreateBookingDto {
   @IsString()
@@ -10,11 +10,11 @@ export class CreateBookingDto {
   @IsString()
   email: string;
 
-  @IsDate()
-  checkInDate: Date;
+  @IsDateString()
+  checkInDate: string;
 
-  @IsDate()
-  checkOutDate: Date;
+  @IsDateString()
+  checkOutDate: string;
 
   @IsNumber()
   @Min(1)

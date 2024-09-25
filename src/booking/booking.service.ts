@@ -1,7 +1,11 @@
 import { Booking, BookingDocument } from '@/db/schemas/booking.schema';
 import { Hotel, HotelDocument } from '@/db/schemas/hotel.schema';
 import { StripeService } from '@/stripe/stripe.service';
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { CreateBookingDto } from './dto/create-booking.dto';
@@ -20,7 +24,6 @@ export class BookingService {
     userId: string,
     bookingData: CreateBookingDto,
   ): Promise<PaymentIntentDto> {
-    console.log('Booking Data:', bookingData);
     const hotel = await this.hotelModel.findById(hotelId);
     if (!hotel) {
       throw new NotFoundException('Hotel not found');
@@ -36,9 +39,36 @@ export class BookingService {
     const checkInDate = new Date(bookingData.checkInDate);
     const checkOutDate = new Date(bookingData.checkOutDate);
 
-    const nights =
-      (checkOutDate.getTime() - checkInDate.getTime()) / (1000 * 60 * 60 * 24);
-    return Math.round(nights * hotel.pricePerNight);
+    if (isNaN(checkInDate.getTime()) || isNaN(checkOutDate.getTime())) {
+      throw new BadRequestException('Invalid check-in or check-out date');
+    }
+
+    if (checkInDate >= checkOutDate) {
+      throw new BadRequestException(
+        'Check-out date must be after check-in date',
+      );
+    }
+
+    const currentDate = new Date();
+    if (checkInDate < currentDate) {
+      throw new BadRequestException('Check-in date cannot be in the past');
+    }
+
+    if (typeof hotel.pricePerNight !== 'number' || isNaN(hotel.pricePerNight)) {
+      throw new BadRequestException('Invalid hotel price');
+    }
+
+    const nights = Math.ceil(
+      (checkOutDate.getTime() - checkInDate.getTime()) / (1000 * 60 * 60 * 24),
+    );
+
+    const totalCost = Math.round(nights * hotel.pricePerNight);
+
+    if (isNaN(totalCost) || totalCost <= 0) {
+      throw new BadRequestException('Error calculating total cost');
+    }
+
+    return totalCost;
   }
 
   async completeBooking(
@@ -51,7 +81,31 @@ export class BookingService {
     if (!hotel) {
       throw new NotFoundException('Hotel not found');
     }
+
+    const checkInDate = new Date(bookingData.checkInDate);
+    const checkOutDate = new Date(bookingData.checkOutDate);
+
+    const overlappingBookings = await this.bookingModel.findOne({
+      hotel: hotelId,
+      $or: [
+        {
+          checkInDate: { $lt: checkOutDate },
+          checkOutDate: { $gt: checkInDate },
+        },
+        {
+          checkInDate: { $gte: checkInDate, $lte: checkOutDate },
+        },
+      ],
+    });
+
+    if (overlappingBookings) {
+      throw new BadRequestException(
+        'The hotel is already booked for the selected dates.',
+      );
+    }
+
     const totalCost = this.calculateTotalCost(bookingData, hotel);
+
     const newBooking = new this.bookingModel({
       ...bookingData,
       owner: userId,
@@ -59,9 +113,12 @@ export class BookingService {
       totalPrice: totalCost,
       paymentIntentId: paymentIntentId,
     });
+
     const savedBooking = await newBooking.save();
+
     hotel.bookings.push(savedBooking.id);
     await hotel.save();
+
     return savedBooking;
   }
 }
