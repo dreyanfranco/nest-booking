@@ -1,3 +1,4 @@
+import { Booking, BookingDocument } from '@/db/schemas/booking.schema';
 import { Hotel, HotelDocument } from '@/db/schemas/hotel.schema';
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
@@ -11,6 +12,7 @@ export class UserService {
   constructor(
     @InjectModel(User.name) private userModel: Model<UserDocument>,
     @InjectModel(Hotel.name) private hotelModel: Model<HotelDocument>,
+    @InjectModel(Booking.name) private bookingModel: Model<BookingDocument>,
   ) {}
 
   async register(createUserDto: CreateUserDto): Promise<User> {
@@ -68,5 +70,10 @@ export class UserService {
     });
 
     return hotelsWithStats;
+  }
+
+  async getUserBookings(userId: string): Promise<Booking[]> {
+    const bookings = await this.bookingModel.find({ owner: userId });
+    return bookings;
   }
 }

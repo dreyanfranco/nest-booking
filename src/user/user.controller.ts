@@ -33,10 +33,10 @@ export class UserController {
     return this.userService.getUserHotels(userId);
   }
 
-  // @Get('bookings')
-  // @UseGuards(JwtAuthGuard)
-  // async getUserBookings(@Request() req) {
-  //   const userId = req.user['id'];
-  //   return this.userService.getUserBookings(userId);
-  // }
+  @Get('bookings')
+  @UseGuards(JwtAuthGuard)
+  async getUserBookings(@Request() req) {
+    const userId = req.user['id'];
+    return this.userService.getUserBookings(userId);
+  }
 }
