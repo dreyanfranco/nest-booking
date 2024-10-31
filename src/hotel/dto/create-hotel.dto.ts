@@ -3,8 +3,8 @@ import {
   IsArray,
   IsNotEmpty,
   IsNumber,
+  IsOptional,
   IsString,
-  Max,
   Min,
 } from 'class-validator';
 
@@ -39,18 +39,20 @@ export class CreateHotelDto implements Partial<HotelType> {
 
   @IsArray()
   @IsString({ each: true })
+  @IsOptional()
   facilities: string[];
 
   @IsNumber()
   @Min(0)
   pricePerNight: number;
 
-  @IsNumber()
-  @Min(1)
-  @Max(5)
-  starRating: number;
+  // @IsNumber()
+  // @Min(1)
+  // @Max(5)
+  // starRating: number;
 
   @IsArray()
   @IsString({ each: true })
+  @IsOptional()
   imageUrls: string[];
 }

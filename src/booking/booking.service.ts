@@ -118,7 +118,7 @@ export class BookingService {
 
     hotel.bookings.push(savedBooking.id);
     await hotel.save();
-
+    console.log('Booking ID:', savedBooking.id);
     return savedBooking;
   }
 }

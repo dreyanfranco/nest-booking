@@ -33,11 +33,11 @@ export class Hotel {
   @Prop({ required: true })
   pricePerNight: number;
 
-  @Prop({ required: true, min: 1, max: 5 })
+  @Prop({ min: 1, max: 5 })
   starRating: number;
 
-  @Prop({ required: true })
-  imageUrls: [string];
+  @Prop()
+  imageUrls?: [string];
 
   @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'User', required: true })
   owner: User;
