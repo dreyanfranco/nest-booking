@@ -85,28 +85,7 @@ Generates paymentIntentId which will be needed to complete booking.
 
 To run this project, you will need to add the following environment variables to your .env file
 
-`MongoDB`
-
-MONGODB_CONNECTION_STRING=mongodb+srv://dreyanfranco:joey1010@booking-app.4lvpsh5.mongodb.net/booking-app
-
-`JWT`
-
-JWT_SECRET_KEY=Q7rgNSXA4tKaeseZHD1pc6meRecYlFGG
-
-FRONTEND_URL=http://localhost:5173
-PORT=5001
-
-`Cloudinary`
-
-CLOUDINARY_API_KEY=541238979172793
-
-CLOUDINARY_API_SECRET=WTcdGP_8VYkbpT0rEP2BbkdWq_s
-
-CLOUDINARY_CLOUD_NAME=dnuckf3ly
-
-`Stripe`
-
-STRIPE_API_KEY=sk_test_51Ot7IVBPw3TgobqbQZFml2B9nTBKTdH9kmih72PLGiw2CKHNkQ7w0j9g3RVE9bGctCnGkJKNUsqkpvoPUm0LWCHZ00i8qj9TjK
+To be disclosed
 
 ## Project setup
 
